@@ -8,10 +8,12 @@ heuristic, this is what Howard Brodale lept upon and coded up, but that
 could be at most only a part of the solution.  Why, because
 
 **most English sentences don't conveniently uppercase the first letter of
-every word, for goodness' sake!**
+every word**
 
-Here in my experiments, I've chosen to ignore case entirely, doing all "is
-this string a word" lookups with lower-case strings:-)
+Here in my experiments, I've chosen to ignore case entirely doing comparisons,
+i.e. I do all "is this string a word" lookups with lower-case candidate words,
+but then I extract the equivalent length string from the original sentence
+for better reporting of the answer(s):-)
 
 To explore the problem space, I tried various experiments first in my
 favourite "executable pseudo-code" (Perl) for convenience (directory
@@ -54,14 +56,24 @@ succeeds (because the last "bidong" is the extra word, case doesn't matter).
 Second, I wrote "findwords2", an extended version which adds an element
 of backtracking, in case picking the longest prefix earlier leads to no
 solution, but picking a slightly shorter prefix earlier would lead to a
-solution.  For example: "iamericall" fails with findword1, because it
-commits to "i america" and then fails with "ll", whereas findword2 delivers
-"i am eric all".
+solution.  For example:
+
+./findwords1 -w ../my-dict-words iamericall
+
+fails to find a solution at all, because it commits to "i america" and then
+fails with "ll", whereas findword2 delivers "i am eric all".
+
+Note that
+
+./findwords2 -w ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword
+
+works to generate the sentence we saw earlier.
 
 
 Third, I wrote a rather different version called "findallpossible" which
-produces ALL possible word sequences (where every element is in the
-dictionary).
+produces ALL possible word sequences (where every candidate word is in the
+dictionary).  It's left as an exercise for the reader to work out which is
+the most likely, or the most grammatical, or whatever.
 
 
 Fourth, I translated findwords1 into C, giving c-version/findlongest.c,
