@@ -1,0 +1,108 @@
+#!/usr/bin/perl
+#
+#	findwords1: read a dictionary, and a sentence WITH NO SPACES, and
+#	attempt to parse the sentence as a sequence of words,
+#	specifically, "a sequence of words, picking the longest possible
+#	prefix that is a word at each stage".
+
+use strict;
+use warnings;
+use Function::Parameters;
+use Data::Dumper;
+use Getopt::Long;
+
+
+#
+# my %wordset = readdict( $wordlistfile, @extra_words );
+#	Read a word list $wordlistfile (and add some extra words contained
+#	in @extra_words), and built and return a set of words, %wordset.
+#
+fun readdict( $wordlistfile, @extra_words )
+{
+	my %dict = map { lc($_) => 1 } @extra_words;
+
+	open( my $fh, '<', $wordlistfile ) || die;
+	while( <$fh> )
+	{
+		chomp;
+		$dict{lc($_)}++;
+	}
+	$fh->close;
+
+	return %dict;
+}
+
+
+#
+# my $longestprefixword = findprefix( $string, $dictset );
+#	Given a string $string and a dictionary set $dictset,
+#	find and return the LONGEST prefix of $string that is in $dictset.
+#
+fun findprefix( $string, $dictset )
+{
+	my $longestprefix = "";
+	my $prefix = "";
+	foreach my $ch (split(//,$string))
+	{
+		$prefix .= $ch;
+		print "debug: string=$string, ch=$ch, prefix=$prefix\n";
+		my $len = length($prefix);
+		if( $dictset->{$prefix} )
+		{
+			print "debug: found: $prefix\n";
+			$longestprefix = $prefix if
+				$len > length($longestprefix);
+		}
+	}
+	print "longest prefix that is a word: $longestprefix\n";
+	return $longestprefix;
+}
+
+
+#
+# my @words = breakwords( $sentence, $lc_sentence, $dictset );
+#	Given a sentence in original case ($sentence) and lower-case
+#	($lc_sentence), and a dictionary set ref $dictset, break the
+#	original sentence up into an array of words, where each word is
+#	the longest possible prefix that is a word in the dictionary set.
+#	Returns () if no breakdown is possible.
+#
+fun breakwords( $string, $lc_string, $dictset )
+{
+	my @word;
+	while( length($string)>0 )
+	{
+		my $longestprefix = findprefix( $lc_string, $dictset );
+		return () unless $longestprefix;
+
+		my $len = length($longestprefix);
+
+		# push corresponding prefix of original $string onto @word
+		push @word, substr($string,0, $len );
+
+		# now remove found word from $string and $lc_string
+		substr($string,0,$len) = '';
+		substr($lc_string,0,$len) = '';
+	}
+	return @word;
+}
+
+
+my $wordlistfile = "/usr/share/dict/words";
+GetOptions(
+	"wordlist=s" => \$wordlistfile
+) && @ARGV > 0 ||
+	die "Usage: findwords1: [--wordlist wordlistfile] ".
+	    "sentencewithoutspaces [extra words]\n";
+
+my $sentence = shift;
+my @extra_words = @ARGV;
+
+# %dict: the set of all dictionary words, lower cased
+my %dict = readdict( $wordlistfile, @extra_words );
+
+#die $dict{and};
+#die Dumper \%dict;
+
+my @words = breakwords( $sentence, lc($sentence), \%dict );
+print join(' ', @words), "\n";

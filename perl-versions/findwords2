@@ -1,0 +1,151 @@
+#!/usr/bin/perl
+#
+#	findwords2: read the dictionary, and a sentence WITH NO SPACES,
+#	and attempt to parse the sentence as a sequence of dictionary words,
+#	specifically, we want to find a single POSSIBLE sequence of words
+#
+#	[copied from findwords1 and added backtracking]
+#
+#	example: findwords1 fails to find a solution with "iamericall"
+#	because it commits to "i america" and then fails with "ll".
+#	This program (findwords2) finds the solution "i am eric all".
+
+use strict;
+use warnings;
+use Function::Parameters;
+use Data::Dumper;
+use Getopt::Long;
+
+
+#
+# my %wordset = readdict( $wordlistfile, @extra_words );
+#	Read a word list $wordlistfile (and add some extra words contained
+#	in @extra_words), and built and return a set of words, %wordset.
+#
+fun readdict( $wordlistfile, @extra_words )
+{
+	my %dict = map { lc($_) => 1 } @extra_words;
+
+	open( my $fh, '<', $wordlistfile ) || die;
+	while( <$fh> )
+	{
+		chomp;
+		$dict{lc($_)}++;
+	}
+	$fh->close;
+
+	return %dict;
+}
+
+
+#
+# my @prefixword = findprefixwords( $string, $dictset );
+#	Given a string $string and a dictionary set $dictset,
+#	find and return all prefixes of $string that are present in $dictset,
+#	in descending order of length (i.e. longest prefix first)
+#
+fun findprefixwords( $string, $dictset )
+{
+	my @prefix;
+
+	my $prefix = "";
+	foreach my $ch (split(//,$string))
+	{
+		$prefix .= $ch;
+		#print "debug: string=$string, ch=$ch, prefix=$prefix\n";
+		if( $dictset->{$prefix} )
+		{
+			#print "debug: found prefix word: $prefix\n";
+			push @prefix, $prefix;
+		}
+	}
+	return sort { length($b) <=> length($a) } @prefix;
+}
+
+
+#
+# my @words = tryprefixword( $prefixword, $string, $lc_string, $dictset );
+#	Ok, the word $prefixword is a dictionary word guaranteed to occur
+#	at the start of $string and $lc_string, remove it from $string and
+#	$lc_string, then see if we can break the rest of the string up into
+#	words.  Returns the array of words (including $prefixword) if we
+#	can, or () if we can't.
+#
+fun tryprefixword( $prefixword, $string, $lc_string, $dictset )
+{
+	die "logic error: prefixword $prefixword not found in $string\n"
+		unless $string =~ /^$prefixword/i;
+
+	my $len = length($prefixword);
+
+	print "trying prefix word $prefixword, string $string, ";
+
+	# remove found word from $string and $lc_string
+	substr($string,0,$len) = '';
+	substr($lc_string,0,$len) = '';
+
+	print "remaining string $string\n";
+
+	# succeed if string is now empty
+	return ( $prefixword ) unless $string;
+
+	my @word = breakwords( $string, $lc_string, $dictset );
+	return () unless @word;
+
+	# add word if break down has worked..
+	unshift @word, $prefixword;
+
+	return @word;
+}
+
+
+#
+# my @word = breakwords( $sentence, $lc_sentence, $dictset );
+#	Given a sentence in original case ($sentence) and lower-case
+#	($lc_sentence), and a dictionary set ref $dictset, break the
+#	original sentence up into a single possible array of words, where
+#	each word is a valid word in the dictionary set.
+#	Returns () if no solution can be found.
+#
+fun breakwords( $string, $lc_string, $dictset )
+{
+	return () unless $string;
+
+	my @prefixwords = findprefixwords( $lc_string, $dictset );
+	return () unless @prefixwords;
+
+	print "debug: breakwords, found following prefix words of $string: ";
+	print join( ',', @prefixwords );
+	print "\n";
+
+	# now have to try each prefix in @prefixwords,
+	# to see if we can split the rest of the string up?
+	# want to generate ALL complete solutions..
+	foreach my $prefixword (@prefixwords)
+	{
+		my @word = tryprefixword( $prefixword, $string, $lc_string, $dictset );
+		# if found a solution, return it
+		return @word if @word;
+	}
+
+	# fail if no solution found
+	return ();
+}
+
+
+my $wordlistfile = "/usr/share/dict/words";
+GetOptions( "wordlist=s" => \$wordlistfile ) && @ARGV > 0 ||
+	die "Usage: findwords [--wordlist wordlistfile] ".
+	    "sentencewithoutspaces [extra words]\n";
+
+my $sentence = shift;
+my @extra_words = @ARGV;
+
+# %dict: the set of all dictionary words, lower cased
+my %dict = readdict( $wordlistfile, @extra_words );
+
+#die $dict{and};
+#die Dumper \%dict;
+
+my @words = breakwords( $sentence, lc($sentence), \%dict );
+print join(' ', @words), "\n";

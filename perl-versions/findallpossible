@@ -1,0 +1,139 @@
+#!/usr/bin/perl
+#
+#	findallpossible: read the dictionary, and a sentence WITH NO SPACES,
+#	and attempt to parse the sentence as a sequence of dictionary words,
+#	specifically, this time we want to generate ALL POSSIBLE sequences of
+#	words..
+#
+#	[copied from findwords2 and added "generate all solutions" logic]
+
+use strict;
+use warnings;
+use Function::Parameters;
+use Data::Dumper;
+use Getopt::Long;
+
+
+#
+# my %wordset = readdict( $wordlistfile, @extra_words );
+#	Read a word list $wordlistfile (and add some extra words contained
+#	in @extra_words), and built and return a set of words, %wordset.
+#
+fun readdict( $wordlistfile, @extra_words )
+{
+	my %dict = map { lc($_) => 1 } @extra_words;
+
+	open( my $fh, '<', $wordlistfile ) || die;
+	while( <$fh> )
+	{
+		chomp;
+		$dict{lc($_)}++;
+	}
+	$fh->close;
+
+	return %dict;
+}
+
+
+my %dict;	# the set of all dictionary words, lower cased
+
+
+#
+# my @prefixword = findprefixwords( $string );
+#	Given a string $string, find and return all prefixes of
+#	$string that are present in the global dictionary %dict,
+#	in descending order of length (i.e. longest prefix first)
+#
+fun findprefixwords( $string )
+{
+	my @prefix;
+
+	my $prefix = "";
+	foreach my $ch (split(//,$string))
+	{
+		$prefix .= $ch;
+		#print "debug: string=$string, ch=$ch, prefix=$prefix\n";
+		if( $dict{$prefix} )
+		{
+			print "debug: found prefix word: $prefix\n";
+			push @prefix, $prefix;
+		}
+	}
+	return sort { length($b) <=> length($a) } @prefix;
+}
+
+
+my @solutions;	# array of solutions.  each solution is a ref to an
+		# array of words.
+
+#
+# breakwords( $sentence, $lc_sentence, @wordssofar );
+#	Given a sentence in original case ($sentence) and lower-case
+#	($lc_sentence), and an array of words found so far @$wordssofar,
+#	break the original sentence up into all possible solutions
+#	(sequences of dictionary words), including @$wordssofar to every
+#	solution.
+#
+fun breakwords( $string, $lc_string, @wordssofar )
+{
+	return unless $string;
+
+	my @prefixwords = findprefixwords( $lc_string );
+	return unless @prefixwords;
+
+	print "debug: breakwords, found following prefix words of $string: ";
+	print join( ',', @prefixwords );
+	print "\n";
+
+	# now try each prefix in @prefixwords,
+	# to see if we can split the rest of the string up?
+	# remember that we want to generate ALL complete solutions..
+	foreach my $prefixword (@prefixwords)
+	{
+		# make @neww, wordssofar + prefixword:
+		my @neww = @wordssofar;
+		push @neww, $prefixword;
+
+		my $len = length($prefixword);
+
+		# find rest of string and lcstring, without $prefixword
+		my $newstr = substr($string,$len);
+		my $newlcstr = substr($lc_string,$len);
+
+		printf( "trying prefix word $prefixword, remaining string %s\n",
+			$newstr//'' );
+
+		if( $newstr )
+		{
+			breakwords( $newstr, $newlcstr, @neww );
+		} else
+		{
+			# newstr empty => @neww is a complete solution..
+			push @solutions, \@neww;
+		}
+	}
+}
+
+
+my $wordlistfile = "/usr/share/dict/words";
+GetOptions( "wordlist=s" => \$wordlistfile ) && @ARGV > 0 ||
+	die "Usage: findallpossible [--wordlist wordlistfile] ".
+	    "sentencewithoutspaces [extra words]\n";
+
+my $sentence = shift;
+my @extra_words = @ARGV;
+
+%dict = readdict( $wordlistfile, @extra_words );
+
+#die $dict{and};
+#die Dumper \%dict;
+
+@solutions = ();
+breakwords( $sentence, lc($sentence) );
+my $nsol = @solutions;
+
+print "found $nsol solutions:\n";
+foreach my $sol (@solutions)
+{
+	print "  ". join(',',@$sol). "\n";
+}
