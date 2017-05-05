@@ -1,4 +1,4 @@
-april 2017: on LinkedIn's Plain Old C programming group, Eric Bidong set
+May 2017: on LinkedIn's Plain Old C programming group, Eric Bidong set
 himself a very hard challenge (that happens to be used as a sample Google
 Interview problem used in a Youtube tutorial) - splitting a sentence with
 no spaces up into words.  eg  "IamEricBidong" -> "I am Eric Bidong".
@@ -64,4 +64,7 @@ Fourth, I translated findwords1 into C, giving c-version/findlongest.c,
 using a set-of-strings ADT module that I wrote many years ago - essentially
 it's a hash table with no values:-)
 
-	dcw, april 2017
+Note how 108 words of Perl (findwords1) becomes 764 lines of C (including
+set.c and set.h), or 204 lines of C (excluding the set module).
+
+	dcw, May 2017
