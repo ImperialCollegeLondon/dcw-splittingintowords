@@ -58,6 +58,7 @@ set readdict( char *wordlistfile, wordarray extra_words )
 
 	// foreach line (word!) in wordlistfile
 	FILE *fh = fopen( wordlistfile, "r" );
+	assert( fh != NULL );
 	aword word;
 	while( fgets(word, MAXWORDLEN, fh ) != NULL )
 	{
