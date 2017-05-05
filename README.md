@@ -65,9 +65,9 @@ fails with "ll", whereas findword2 delivers "i am eric all".
 
 Note that
 
-./findwords2 -w ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword
+./findwords2 -w ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
 
-works to generate the sentence we saw earlier.
+works to generate the sentence we saw earlier.  Isn't that nice:-)
 
 
 Third, I wrote a rather different version called "findallpossible" which
