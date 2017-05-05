@@ -89,8 +89,8 @@ fun tryprefixword( $prefixword, $string, $lc_string, $dictset )
 
 	print "remaining string $string\n";
 
-	# succeed if string is now empty
-	return ( $prefixword ) unless $string;
+	# succeed if string is now empty, return original case prefix word
+	return ( $origprefixword ) unless $string;
 
 	my @word = breakwords( $string, $lc_string, $dictset );
 	return () unless @word;
@@ -117,9 +117,9 @@ fun breakwords( $string, $lc_string, $dictset )
 	my @prefixwords = findprefixwords( $lc_string, $dictset );
 	return () unless @prefixwords;
 
-	print "debug: breakwords, found following prefix words of $string: ";
-	print join( ',', @prefixwords );
-	print "\n";
+	#print "debug: breakwords, found following prefix words of $string: ";
+	#print join( ',', @prefixwords );
+	#print "\n";
 
 	# now have to try each prefix in @prefixwords,
 	# to see if we can split the rest of the string up?
