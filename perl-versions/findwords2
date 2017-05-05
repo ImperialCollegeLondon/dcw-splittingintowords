@@ -80,6 +80,9 @@ fun tryprefixword( $prefixword, $string, $lc_string, $dictset )
 
 	print "trying prefix word $prefixword, string $string, ";
 
+	# get the original-case version of the prefix word
+	my $origprefixword = substr($string,0, $len );
+
 	# remove found word from $string and $lc_string
 	substr($string,0,$len) = '';
 	substr($lc_string,0,$len) = '';
@@ -93,7 +96,7 @@ fun tryprefixword( $prefixword, $string, $lc_string, $dictset )
 	return () unless @word;
 
 	# add word if break down has worked..
-	unshift @word, $prefixword;
+	unshift @word, $origprefixword;
 
 	return @word;
 }

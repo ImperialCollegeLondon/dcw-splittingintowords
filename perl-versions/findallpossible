@@ -90,26 +90,28 @@ fun breakwords( $string, $lc_string, @wordssofar )
 	# remember that we want to generate ALL complete solutions..
 	foreach my $prefixword (@prefixwords)
 	{
-		# make @neww, wordssofar + prefixword:
-		my @neww = @wordssofar;
-		push @neww, $prefixword;
-
 		my $len = length($prefixword);
+
+		# get the original-case version of the prefix word
+		my $origprefixword = substr($string,0, $len );
+
+		# append origprefixword to wordssofar:
+		push @wordssofar, $origprefixword;
 
 		# find rest of string and lcstring, without $prefixword
 		my $newstr = substr($string,$len);
 		my $newlcstr = substr($lc_string,$len);
 
-		printf( "trying prefix word $prefixword, remaining string %s\n",
-			$newstr//'' );
+		printf( "trying prefix word $origprefixword, ".
+			"remaining string %s\n",   $newstr//'' );
 
 		if( $newstr )
 		{
-			breakwords( $newstr, $newlcstr, @neww );
+			breakwords( $newstr, $newlcstr, @wordssofar );
 		} else
 		{
-			# newstr empty => @neww is a complete solution..
-			push @solutions, \@neww;
+			# newstr empty => @wordssofar is a complete solution..
+			push @solutions, [ @wordssofar ];
 		}
 	}
 }

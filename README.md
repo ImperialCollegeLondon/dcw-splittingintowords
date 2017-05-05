@@ -5,9 +5,13 @@ no spaces up into words.  eg  "IamEricBidong" -> "I am Eric Bidong".
 
 Obviously, lower case -> upper case transitions are one possible useful
 heuristic, this is what Howard Brodale lept upon and coded up, but that
-could be at most only a part of the solution.  However, I've chosen to
-ignore case entirely, doing all "is this string a word" lookups with
-lower-case strings:-)
+could be at most only a part of the solution.  Why, because
+
+**most English sentences don't conveniently uppercase the first letter of
+every word, for goodness' sake!**
+
+Here in my experiments, I've chosen to ignore case entirely, doing all "is
+this string a word" lookups with lower-case strings:-)
 
 To explore the problem space, I tried various experiments first in my
 favourite "executable pseudo-code" (Perl) for convenience (directory
