@@ -89,10 +89,13 @@ Perl, 165 lines of C.  Either way, it seems roughly 2 lines of C per line
 of Perl (still excluding the set module).
 
 
-When I have time (in a few days, perhaps - I'm going on a week's holiday
-shortly), I will attempt to translate findwords2 into C, as findwords2
-performs rather better as described above.  Translating Perl code (where
-Perl does all the storage management for you) into C code (where you
-must do it yourself) forcibly reminds you that storage management is hard:-)
+Fifth, I translated the "with backtracking" version findwords2 into C, as
+findwords2 performs rather better (as I described above).  The result is:
+c-version/backtrack.c; this should behave exactly the same as findwords2.
+This time, 154 lines of Perl translates into 264 lines of C - a much better
+ratio.  I have implemented backtrack.c in a far more "C like" fashion, for
+example extracting words in place rather than copying them around all the
+time as the Perl version does, and building an array of word lengths rather
+than an array of words.
 
 	dcw, May 2017
