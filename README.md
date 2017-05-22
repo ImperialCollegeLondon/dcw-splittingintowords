@@ -84,7 +84,7 @@ meaningful, or the one with the greatest probability of being correct,
 or whatever.
 
 
-Fourth, I translated findwords1 into C, giving c-version/findlongest.c,
+Fourth, I translated findwords1 into C, giving c-versions/findlongest.c,
 using a set-of-strings ADT module that I wrote many years ago - essentially
 it's a hash table with no values:-)
 
@@ -101,7 +101,7 @@ You can run findlongest as follows:
 
 
 Fifth, I translated the "with backtracking" version findwords2 into C.
-The result is c-version/backtrack.c, which behaves exactly the same as
+The result is c-versions/backtrack.c, which behaves exactly the same as
 findwords2 does, i.e. where findwords1/findlongest finds a solution,
 findwords2/backtrack will find the same solution, but where
 findwords1/findlongest fails to find a solution, as in the "Iamericall"
