@@ -63,7 +63,11 @@ solution.  For example:
 ./findwords1 -w ../my-dict-words iamericall
 
 fails to find a solution at all, because it commits to "i america" and then
-fails with "ll", whereas findword2 delivers "i am eric all".
+fails with "ll", whereas
+
+./findwords2 -w ../my-dict-words iamericall
+
+delivers the breakdown "i am eric all".
 
 Note that
 
