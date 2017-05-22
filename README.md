@@ -80,8 +80,7 @@ the most likely, or the most grammatical, or whatever.
 
 Fourth, I translated findwords1 into C, giving c-version/findlongest.c,
 using a set-of-strings ADT module that I wrote many years ago - essentially
-it's a hash table with no values:-)  BTW, I malloc()ed a copy of each word
-found, and never bothered to free those words; bad Duncan, evil Duncan:-(
+it's a hash table with no values:-)
 
 Note how 108 words of Perl (findwords1) becomes 764 lines of C (including
 set.c and set.h), or 204 lines of C (excluding the set module, which to

@@ -137,7 +137,15 @@ int breakwords( char *sentence, char *lc_sentence, set dict, wordarray words )
 		int len = findprefixlen( lc_sentence, dict );
 
 		// fail if no prefix word found
-		if( len == 0 ) return 0;
+		if( len == 0 )
+		{
+			// free any earlier allocated words..
+			for( int i=0; i<nwords; i++ )
+			{
+				free( words[i] );
+			}
+			return 0;
+		}
 
 		// push corresponding prefix of original sentence onto words[]
 		words[nwords] = malloc( (len+1) * sizeof(char) );
@@ -199,9 +207,11 @@ int main( int argc, char **argv )
 		for( int i=0; i<nwords; i++ )
 		{
 			printf( "%s%c", words[i], i==nwords-1?'\n':' ' );
+			free( words[i] );
 		}
 		putchar( '\n' );
 	}
+	setFree( dict );
 
 	return 0;
 }

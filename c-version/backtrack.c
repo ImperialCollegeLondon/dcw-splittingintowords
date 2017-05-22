@@ -259,6 +259,8 @@ int main( int argc, char **argv )
 			printf( "%s%c", words[i], i==nwords-1?'\n':' ' );
 		}
 	}
+	free( words[0] );
+	setFree( dict );
 
 	return 0;
 }
