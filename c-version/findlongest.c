@@ -194,6 +194,7 @@ int main( int argc, char **argv )
 		printf( "No solution found\n" );
 	} else
 	{
+		printf( "found solution with %d words\n", nwords );
 		// where's Perl's "join" function when you need it:-)
 		for( int i=0; i<nwords; i++ )
 		{

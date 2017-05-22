@@ -5,7 +5,9 @@ no spaces up into words.  eg  "IamEricBidong" -> "I am Eric Bidong".
 
 Obviously, lower case -> upper case transitions are one possible useful
 heuristic, this is what Howard Brodale lept upon and coded up, but that
-could be at most only a part of the solution.  Why, because
+could be at most only a part of the solution.
+
+Why?  Because, quite simply:
 
 **most English sentences don't conveniently uppercase the first letter of
 every word**
@@ -88,14 +90,25 @@ Perl and C versions) are comments, without those it's roughly 80 lines of
 Perl, 165 lines of C.  Either way, it seems roughly 2 lines of C per line
 of Perl (still excluding the set module).
 
+You can run findlongest as follows:
 
-Fifth, I translated the "with backtracking" version findwords2 into C, as
-findwords2 performs rather better (as I described above).  The result is:
-c-version/backtrack.c; this should behave exactly the same as findwords2.
+./findlongest ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
+
+Fifth, I translated the "with backtracking" version findwords2 into C.
+The result is c-version/backtrack.c, which behaves exactly the same as
+findwords2 does, i.e. where findwords1/findlongest finds a solution,
+findwords2/backtrack will find the same solution, but where
+findwords1/findlongest fails to find a solution, as in the "Iamericall"
+example, findwords2/backtrack is much more likely to find a solution.
+
 This time, 154 lines of Perl translates into 264 lines of C - a much better
 ratio.  I have implemented backtrack.c in a far more "C like" fashion, for
 example extracting words in place rather than copying them around all the
 time as the Perl version does, and building an array of word lengths rather
 than an array of words.
+
+You can run backtrack as follows:
+
+./backtrack ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
 
 	dcw, May 2017
