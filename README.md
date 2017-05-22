@@ -9,7 +9,7 @@ could be at most only a part of the solution.
 
 Why?  Because, quite simply:
 
-**most English sentences don't conveniently uppercase the first letter of
+**Most English sentences don't conveniently uppercase the first letter of
 every word**
 
 Here in my experiments, I've chosen to ignore case entirely doing comparisons,
@@ -71,22 +71,24 @@ delivers the breakdown "i am eric all".
 
 Note that
 
-./findwords2 -w ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
+./findwords2 -w ../my-dict-words "MostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
 
 works to generate the sentence we saw earlier.  Isn't that nice:-)
 
 
 Third, I wrote a rather different version called "findallpossible" which
-produces ALL possible word sequences (where every candidate word is in the
-dictionary).  It's left as an exercise for the reader to work out which is
-the most likely, or the most grammatical, or whatever.
+produces ALL possible word breakdowns (where every candidate word is in the
+dictionary).  It's left as a (very hard) exercise for the reader to work out
+which word breakdown is the most grammatical, or the most semantically
+meaningful, or the one with the greatest probability of being correct,
+or whatever.
 
 
 Fourth, I translated findwords1 into C, giving c-version/findlongest.c,
 using a set-of-strings ADT module that I wrote many years ago - essentially
 it's a hash table with no values:-)
 
-Note how 108 words of Perl (findwords1) becomes 764 lines of C (including
+Note how 108 lines of Perl (findwords1) becomes 764 lines of C (including
 set.c and set.h), or 204 lines of C (excluding the set module, which to
 be fair I had written years ago).  Actually, many of those lines (in both
 Perl and C versions) are comments, without those it's roughly 80 lines of
@@ -95,7 +97,8 @@ of Perl (still excluding the set module).
 
 You can run findlongest as follows:
 
-./findlongest ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
+./findlongest ../my-dict-words "MostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
+
 
 Fifth, I translated the "with backtracking" version findwords2 into C.
 The result is c-version/backtrack.c, which behaves exactly the same as
@@ -112,6 +115,6 @@ than an array of words.
 
 You can run backtrack as follows:
 
-./backtrack ../my-dict-words "mostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
+./backtrack ../my-dict-words "MostEnglishsentencesdon'tconvenientlyuppercasethefirstletterofeveryword"
 
 	dcw, May 2017
